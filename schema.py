@@ -5,97 +5,88 @@ This module defines the schema for an equipment database that includes:
 - Tractors
 - Combines
 - Construction Equipment
+
+Using TerminusDB WOQLSchema for proper schema definition
 """
 
 from terminusdb_client import Client
-from terminusdb_client.woqlschema import DocumentTemplate, EnumTemplate, LexicalKey
+from terminusdb_client.woqlschema import DocumentTemplate, WOQLSchema
+from typing import Optional
 
 
-class EquipmentType(EnumTemplate):
-    """Types of equipment in the database"""
-    tractor = ()
-    combine = ()
-    excavator = ()
-    bulldozer = ()
-    backhoe = ()
-    crane = ()
-
-
-class EquipmentCondition(EnumTemplate):
-    """Condition status of equipment"""
-    excellent = ()
-    good = ()
-    fair = ()
-    poor = ()
-    needs_repair = ()
+# Shared schema instance
+schema = WOQLSchema()
 
 
 class Manufacturer(DocumentTemplate):
     """Manufacturer information"""
-    _key = LexicalKey(['name'])
+    _schema = schema
     name: str
     country: str
-    website: str = None
+    website: Optional[str] = None
 
 
-class Equipment(DocumentTemplate):
-    """Base equipment class"""
-    _key = LexicalKey(['serial_number'])
+class Tractor(DocumentTemplate):
+    """Tractor equipment"""
+    _schema = schema
     serial_number: str
-    equipment_type: EquipmentType
-    manufacturer: Manufacturer
+    manufacturer: str
     model: str
     year: int
-    condition: EquipmentCondition
-    purchase_price: float = None
-    current_value: float = None
-    hours_used: int = 0
-    location: str = None
-    notes: str = None
-
-
-class Tractor(Equipment):
-    """Tractor-specific attributes"""
+    condition: str
     horsepower: int
-    transmission_type: str  # Manual, Automatic, Hydrostatic
-    pto_hp: int = None  # Power Take-Off horsepower
-    lift_capacity: float = None  # in lbs
-    four_wheel_drive: bool = False
+    transmission_type: str
+    purchase_price: Optional[float] = None
+    current_value: Optional[float] = None
+    hours_used: Optional[int] = 0
+    location: Optional[str] = None
+    notes: Optional[str] = None
+    pto_hp: Optional[int] = None
+    lift_capacity: Optional[float] = None
+    four_wheel_drive: Optional[bool] = False
 
 
-class Combine(Equipment):
-    """Combine harvester-specific attributes"""
-    header_width: float  # in feet
-    grain_tank_capacity: int  # in bushels
+class Combine(DocumentTemplate):
+    """Combine harvester equipment"""
+    _schema = schema
+    serial_number: str
+    manufacturer: str
+    model: str
+    year: int
+    condition: str
+    header_width: float
+    grain_tank_capacity: int
     horsepower: int
-    separator_type: str  # Conventional, Rotary, Hybrid
+    separator_type: str
+    purchase_price: Optional[float] = None
+    current_value: Optional[float] = None
+    hours_used: Optional[int] = 0
+    location: Optional[str] = None
+    notes: Optional[str] = None
 
 
-class ConstructionEquipment(Equipment):
-    """Construction equipment-specific attributes"""
-    operating_weight: float  # in lbs
-    max_digging_depth: float = None  # in feet
-    max_reach: float = None  # in feet
-    bucket_capacity: float = None  # in cubic yards
-    max_lift_capacity: float = None  # in lbs for cranes
+class ConstructionEquipment(DocumentTemplate):
+    """Construction equipment"""
+    _schema = schema
+    serial_number: str
+    manufacturer: str
+    model: str
+    year: int
+    condition: str
+    equipment_type: str
+    operating_weight: float
+    purchase_price: Optional[float] = None
+    current_value: Optional[float] = None
+    hours_used: Optional[int] = 0
+    location: Optional[str] = None
+    notes: Optional[str] = None
+    max_digging_depth: Optional[float] = None
+    max_reach: Optional[float] = None
+    bucket_capacity: Optional[float] = None
+    max_lift_capacity: Optional[float] = None
 
 
-def create_schema(client: Client):
-    """Create the database schema"""
-    # The schema is automatically created when classes are defined
-    # This function exists to organize schema creation
-    schema_classes = [
-        EquipmentType,
-        EquipmentCondition,
-        Manufacturer,
-        Equipment,
-        Tractor,
-        Combine,
-        ConstructionEquipment
-    ]
-    
-    # Insert schema objects into the database
-    for schema_class in schema_classes:
-        client.insert_document(schema_class(), graph_type="schema")
-    
-    return schema_classes
+def commit_schema(client: Client):
+    """Commit the schema to the database"""
+    schema.commit(client, commit_msg="Create equipment database schema")
+    return schema

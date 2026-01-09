@@ -8,10 +8,7 @@ This script:
 """
 
 from terminusdb_client import Client
-from schema import (
-    EquipmentType, EquipmentCondition, Manufacturer, Equipment,
-    Tractor, Combine, ConstructionEquipment
-)
+from schema import commit_schema
 
 
 # Database configuration
@@ -53,6 +50,10 @@ def initialize_database():
     print(f"Connecting to database '{DB_NAME}'...")
     client.connect(db=DB_NAME)
     
+    # Commit schema
+    print("Creating schema...")
+    commit_schema(client)
+    
     print("Database initialized successfully!")
     return client
 
@@ -65,4 +66,6 @@ if __name__ == "__main__":
         print(f"  Name: {DB_NAME}")
     except Exception as e:
         print(f"\n✗ Error initializing database: {e}")
+        import traceback
+        traceback.print_exc()
         raise

@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   terminusdb:
     image: terminusdb/terminusdb-server:latest
@@ -10,7 +8,6 @@ services:
       - TERMINUSDB_ADMIN_PASS=root
     volumes:
       - terminusdb-data:/app/terminusdb/storage
-    command: ["terminusdb", "serve"]
 
 volumes:
   terminusdb-data:
