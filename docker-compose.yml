@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  terminusdb:
+    image: terminusdb/terminusdb-server:latest
+    container_name: terminusdb-equipment
+    ports:
+      - "6363:6363"
+    environment:
+      - TERMINUSDB_ADMIN_PASS=root
+    volumes:
+      - terminusdb-data:/app/terminusdb/storage
+    command: ["terminusdb", "serve"]
+
+volumes:
+  terminusdb-data:
