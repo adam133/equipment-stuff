@@ -117,24 +117,39 @@ python update_examples.py
 
 This demonstrates:
 - Adding new manufacturers
-- Adding new equipment (tractors, combines, construction)
+- Adding new equipment (tractors, combines, construction, balers)
 - Updating equipment hours
 - Updating equipment condition
 - Updating equipment location
 - Updating equipment values
 
+### 7. Explore Schema Evolution
+
+See how TerminusDB handles schema changes and data preservation:
+
+```bash
+python demonstrate_schema_evolution.py
+```
+
+This demonstrates:
+- How new classes (balers) coexist with existing equipment
+- What happens to existing data when schema changes
+- Strategies for schema evolution in development vs production
+- Best practices for backwards compatibility
+
 ## Project Structure
 
 ```
 equipment-stuff/
-├── docker-compose.yml      # TerminusDB server configuration
-├── requirements.txt        # Python dependencies
-├── schema.py              # Database schema definitions
-├── init_db.py             # Database initialization script
-├── load_data.py           # Sample data loading script
-├── query_examples.py      # Query demonstrations
-├── update_examples.py     # Add/Update demonstrations
-└── README.md              # This file
+├── docker-compose.yml                # TerminusDB server configuration
+├── requirements.txt                  # Python dependencies
+├── schema.py                        # Database schema definitions
+├── init_db.py                       # Database initialization script
+├── load_data.py                     # Sample data loading script
+├── query_examples.py                # Query demonstrations
+├── update_examples.py               # Add/Update demonstrations
+├── demonstrate_schema_evolution.py  # Schema evolution demonstration
+└── README.md                        # This file
 ```
 
 ## Schema Design
@@ -198,29 +213,96 @@ Equipment (base class)
 
 ## How TerminusDB Handles Schema Changes
 
-TerminusDB manages schema evolution through its commit-based system:
+TerminusDB manages schema evolution through its commit-based system, similar to Git for version control. Understanding how schema changes affect existing data is crucial for maintaining data integrity.
 
 ### Schema Definition
 - Schemas are defined using `WOQLSchema()` and `DocumentTemplate` classes
 - Each document type is defined declaratively with typed fields
-- The schema is stored as part of the database
+- The schema is stored as part of the database and versioned with commits
+
+### What Happens to Existing Data?
+
+**When adding NEW classes (like the Baler subclasses):**
+- ✅ **Existing data is PRESERVED** - All existing equipment data remains intact
+- ✅ **No migration needed** - This is a non-breaking change
+- ✅ **Immediate availability** - New documents can use the new classes right away
+- ✅ **Coexistence** - Old and new classes work together in the same database
+
+**When modifying EXISTING classes:**
+- Adding **optional fields**: Safe - existing data remains valid, new field is null
+- Adding **required fields**: Requires migration - existing documents need values
+- Removing **fields**: Existing data keeps the field but schema won't validate it
+- Changing **field types**: May require data migration and validation
+
+### Schema Evolution Strategies
+
+#### 1. Development Approach (Used in this project)
+```bash
+# Delete and recreate database for clean slate
+python init_db.py
+```
+- Fast iteration during development
+- No migration scripts needed
+- Start fresh with each schema change
+
+#### 2. Production Approach
+```python
+# Incremental schema updates
+from schema import schema
+
+# Update schema.py with changes
+# Then commit incrementally
+schema.commit(client, commit_msg="Add baler_weight_capacity field")
+```
+- Incremental updates preserve existing data
+- Write migration scripts for breaking changes
+- Test migrations on copies before production
+
+#### 3. Backwards Compatibility Best Practices
+- **Add** new classes instead of modifying existing ones
+- Use **optional fields** for new attributes to avoid breaking changes
+- **Deprecate** rather than remove fields
+- **Version** your schema classes if needed (e.g., `TractorV2`)
 
 ### Schema Commits
 - Schema changes are committed using `schema.commit(client, commit_msg="...")`
 - Each schema change creates a new commit in the database history
 - This allows tracking of schema evolution over time
+- TerminusDB maintains both schema and data versions
 
-### Schema Updates
-- To modify the schema, update the `schema.py` file with new classes or fields
-- Re-run `init_db.py` to delete and recreate the database with the new schema
-- Alternatively, for production systems, you can perform incremental schema updates
-
-### Adding New Equipment Types
+### Adding New Equipment Types (Example)
 This project demonstrates schema extension by adding the Baler class hierarchy:
-1. Define base `Baler` class with common attributes
-2. Define subclasses (`SmallSquareBaler`, `LargeSquareBaler`, `RoundBaler`) with specific attributes
-3. Commit the updated schema to TerminusDB
-4. Load sample data using the new classes
+
+1. **Define classes in `schema.py`:**
+   ```python
+   class SmallSquareBaler(DocumentTemplate):
+       _schema = schema
+       serial_number: str
+       # ... additional fields
+   ```
+
+2. **Commit the updated schema:**
+   ```bash
+   python init_db.py  # Development
+   # OR
+   schema.commit(client, commit_msg="Add baler classes")  # Production
+   ```
+
+3. **Load data using new classes:**
+   ```bash
+   python load_data.py
+   ```
+
+4. **Verify with demonstration:**
+   ```bash
+   python demonstrate_schema_evolution.py
+   ```
+
+### Key Takeaways
+- **Additive changes** (new classes, optional fields) are safe
+- **Breaking changes** (required fields, type changes) need migration
+- **Schema history** is preserved with commits
+- **Data versioning** allows rollback if needed
 
 ## Usage Examples
 
