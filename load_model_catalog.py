@@ -25,7 +25,7 @@ def load_manufacturers(client):
             founded_year=1837,
             headquarters="Moline, Illinois",
             website="https://www.deere.com",
-            product_categories=["Tractors", "Combines", "Construction Equipment", "Hay Equipment"]
+            product_categories="Tractors, Combines, Construction Equipment, Hay Equipment"
         ),
         ManufacturerCatalog(
             name="Case IH",
@@ -33,7 +33,7 @@ def load_manufacturers(client):
             founded_year=1842,
             headquarters="Racine, Wisconsin",
             website="https://www.caseih.com",
-            product_categories=["Tractors", "Combines", "Hay Equipment"]
+            product_categories="Tractors, Combines, Hay Equipment"
         ),
         ManufacturerCatalog(
             name="New Holland",
@@ -41,7 +41,7 @@ def load_manufacturers(client):
             founded_year=1895,
             headquarters="New Holland, Pennsylvania",
             website="https://www.newholland.com",
-            product_categories=["Tractors", "Combines", "Hay Equipment", "Construction Equipment"]
+            product_categories="Tractors, Combines, Hay Equipment, Construction Equipment"
         ),
         ManufacturerCatalog(
             name="Kubota",
@@ -49,7 +49,7 @@ def load_manufacturers(client):
             founded_year=1890,
             headquarters="Osaka, Japan",
             website="https://www.kubota.com",
-            product_categories=["Tractors", "Construction Equipment", "Utility Vehicles"]
+            product_categories="Tractors, Construction Equipment, Utility Vehicles"
         ),
         ManufacturerCatalog(
             name="Caterpillar",
@@ -57,7 +57,7 @@ def load_manufacturers(client):
             founded_year=1925,
             headquarters="Peoria, Illinois",
             website="https://www.cat.com",
-            product_categories=["Construction Equipment", "Mining Equipment", "Engines"]
+            product_categories="Construction Equipment, Mining Equipment, Engines"
         ),
     ]
     
@@ -218,23 +218,9 @@ def load_tractor_models(client):
             dimensions="DimensionSpecification/1",
             fuel_capacity_liters=1135,
             def_capacity_liters=76,
-            standard_features=[
-                "CommandCenter 4 Display",
-                "AutoTrac Ready",
-                "Premium LED Lighting",
-                "Air Suspension Seat",
-                "Hydraulic Trailer Brakes"
-            ],
-            optional_features=[
-                "AutoTrac Activation",
-                "JDLink Telematics",
-                "Premium Cab Soundproofing",
-                "Twin Wheel Configuration",
-                "Front 3-Point Hitch"
-            ],
-            available_tire_sizes=[
-                "480/80R50", "520/85R46", "480/80R46"
-            ],
+            standard_features="CommandCenter 4 Display, AutoTrac Ready, Premium LED Lighting, Air Suspension Seat, Hydraulic Trailer Brakes",
+            optional_features="AutoTrac Activation, JDLink Telematics, Premium Cab Soundproofing, Twin Wheel Configuration, Front 3-Point Hitch",
+            available_tire_sizes="480/80R50, 520/85R46, 480/80R46",
             production_start_date="2023-08-01",
             msrp_base_usd=385000.00,
             category="Row Crop"
@@ -252,18 +238,8 @@ def load_tractor_models(client):
             four_wheel_drive=True,
             fuel_capacity_liters=1173,
             def_capacity_liters=83,
-            standard_features=[
-                "AFS Pro 1200 Display",
-                "Deluxe Cab with Air Suspension",
-                "LED Work Lights",
-                "AccuGuide Ready"
-            ],
-            optional_features=[
-                "AccuGuide Activation",
-                "Advanced Farming Systems (AFS)",
-                "Front Linkage and PTO",
-                "Rear Wheel Weights"
-            ],
+            standard_features="AFS Pro 1200 Display, Deluxe Cab with Air Suspension, LED Work Lights, AccuGuide Ready",
+            optional_features="AccuGuide Activation, Advanced Farming Systems (AFS), Front Linkage and PTO, Rear Wheel Weights",
             production_start_date="2023-06-01",
             msrp_base_usd=340000.00,
             category="Row Crop"
@@ -281,18 +257,8 @@ def load_tractor_models(client):
             four_wheel_drive=True,
             fuel_capacity_liters=270,
             def_capacity_liters=30,
-            standard_features=[
-                "Kubota Multi-Info Display",
-                "Bi-Speed Turn",
-                "Auto PTO",
-                "Cruise Control"
-            ],
-            optional_features=[
-                "Kubota Farm Solutions (KFS)",
-                "Front Loader Ready Package",
-                "LED Work Light Package",
-                "Air Suspension Seat"
-            ],
+            standard_features="Kubota Multi-Info Display, Bi-Speed Turn, Auto PTO, Cruise Control",
+            optional_features="Kubota Farm Solutions (KFS), Front Loader Ready Package, LED Work Light Package, Air Suspension Seat",
             production_start_date="2023-01-01",
             msrp_base_usd=125000.00,
             category="Utility"
@@ -316,11 +282,7 @@ def load_tractor_trims(client):
             base_model="TractorModel/1",  # 8R 370
             trim_name="Base",
             trim_code="8R370-BASE",
-            included_features=[
-                "CommandCenter 4 Display",
-                "AutoTrac Ready",
-                "Premium LED Lighting"
-            ],
+            included_features="CommandCenter 4 Display, AutoTrac Ready, Premium LED Lighting",
             msrp_usd=385000.00,
             trim_premium_usd=0.00
         ),
@@ -328,14 +290,7 @@ def load_tractor_trims(client):
             base_model="TractorModel/1",  # 8R 370
             trim_name="Premium",
             trim_code="8R370-PREM",
-            included_features=[
-                "CommandCenter 4 Display with Premium Features",
-                "AutoTrac Activated",
-                "Premium LED Lighting Package",
-                "JDLink Telematics - 3 Years",
-                "Premium Cab Soundproofing",
-                "Leather Seat"
-            ],
+            included_features="CommandCenter 4 Display with Premium Features, AutoTrac Activated, Premium LED Lighting Package, JDLink Telematics - 3 Years, Premium Cab Soundproofing, Leather Seat",
             msrp_usd=425000.00,
             trim_premium_usd=40000.00
         ),
@@ -343,11 +298,7 @@ def load_tractor_trims(client):
             base_model="TractorModel/2",  # Magnum 340
             trim_name="Base",
             trim_code="MAG340-BASE",
-            included_features=[
-                "AFS Pro 1200 Display",
-                "Deluxe Cab",
-                "LED Work Lights"
-            ],
+            included_features="AFS Pro 1200 Display, Deluxe Cab, LED Work Lights",
             msrp_usd=340000.00,
             trim_premium_usd=0.00
         ),
@@ -356,12 +307,7 @@ def load_tractor_trims(client):
             trim_name="Rowtrac",
             trim_code="MAG340-ROWTRAC",
             hydraulic_variant="Enhanced Hydraulic System - 295 LPM",
-            included_features=[
-                "AFS Pro 1200 Display",
-                "Rowtrac Rubber Track System",
-                "Premium Cab Package",
-                "AccuGuide Ready"
-            ],
+            included_features="AFS Pro 1200 Display, Rowtrac Rubber Track System, Premium Cab Package, AccuGuide Ready",
             msrp_usd=395000.00,
             trim_premium_usd=55000.00
         ),
@@ -391,26 +337,10 @@ def load_combine_models(client):
             separator_width_mm=1600,
             grain_tank_capacity_liters=14100,
             unloading_rate_liters_per_sec=159,
-            compatible_header_types=[
-                "Grain Platform",
-                "Corn Head",
-                "Draper Platform",
-                "Flex Draper",
-                "Contour Master"
-            ],
-            compatible_header_widths_m=[9.1, 10.7, 12.2, 13.7],
-            standard_features=[
-                "Generation 4 CommandCenter Display",
-                "ProDrive Transmission",
-                "Active Terrain Adjustment",
-                "Dyna-Flo Plus Cleaning System"
-            ],
-            optional_features=[
-                "HarvestLab 3000 Grain Sensing",
-                "Active Yield and Moisture Calibration",
-                "Machine Sync",
-                "Combine Advisor Package"
-            ],
+            compatible_header_types="Grain Platform, Corn Head, Draper Platform, Flex Draper, Contour Master",
+            compatible_header_widths_m="9.1, 10.7, 12.2, 13.7",
+            standard_features="Generation 4 CommandCenter Display, ProDrive Transmission, Active Terrain Adjustment, Dyna-Flo Plus Cleaning System",
+            optional_features="HarvestLab 3000 Grain Sensing, Active Yield and Moisture Calibration, Machine Sync, Combine Advisor Package",
             production_start_date="2023-07-01",
             msrp_base_usd=485000.00
         ),
@@ -424,23 +354,10 @@ def load_combine_models(client):
             separator_type="Rotary",
             grain_tank_capacity_liters=15900,
             unloading_rate_liters_per_sec=177,
-            compatible_header_types=[
-                "Grain Platform",
-                "Folding Corn Head",
-                "Draper Platform"
-            ],
-            compatible_header_widths_m=[10.7, 12.2, 13.7, 15.2],
-            standard_features=[
-                "AFS Pro 1200 Display",
-                "Adaptive Ground Speed System",
-                "AFS Harvest Command Automation",
-                "CrossFlow Cleaning System"
-            ],
-            optional_features=[
-                "AFS Soil Command",
-                "Extended Wear Package",
-                "Residue Management System"
-            ],
+            compatible_header_types="Grain Platform, Folding Corn Head, Draper Platform",
+            compatible_header_widths_m="10.7, 12.2, 13.7, 15.2",
+            standard_features="AFS Pro 1200 Display, Adaptive Ground Speed System, AFS Harvest Command Automation, CrossFlow Cleaning System",
+            optional_features="AFS Soil Command, Extended Wear Package, Residue Management System",
             production_start_date="2023-06-01",
             msrp_base_usd=565000.00
         ),
@@ -474,17 +391,9 @@ def load_baler_models(client):
             bale_diameter_min_cm=91,
             bale_diameter_max_cm=152,
             bale_width_cm=122,
-            twine_systems=["MaxiWrap Plus", "CoverEdge Net Wrap"],
-            standard_features=[
-                "MegaWide Plus Pickup",
-                "CoverEdge Net Wrap System",
-                "B-Wrap Monitor"
-            ],
-            optional_features=[
-                "Bale Command Plus",
-                "Pre-Cutter System",
-                "Preservative Applicator"
-            ],
+            twine_systems="MaxiWrap Plus, CoverEdge Net Wrap",
+            standard_features="MegaWide Plus Pickup, CoverEdge Net Wrap System, B-Wrap Monitor",
+            optional_features="Bale Command Plus, Pre-Cutter System, Preservative Applicator",
             production_start_date="2023-01-01",
             msrp_base_usd=55000.00
         ),
@@ -504,17 +413,9 @@ def load_baler_models(client):
             bale_length_cm=244,
             bale_density_kg_per_m3=200,
             compression_type="Packer Crank",
-            twine_systems=["4-Tie Knotter System"],
-            standard_features=[
-                "AFS Pro 700 Display",
-                "Packer Crank Density Control",
-                "XtraTie Option"
-            ],
-            optional_features=[
-                "Bale Ramp",
-                "Preservative System",
-                "Wide Pickup"
-            ],
+            twine_systems="4-Tie Knotter System",
+            standard_features="AFS Pro 700 Display, Packer Crank Density Control, XtraTie Option",
+            optional_features="Bale Ramp, Preservative System, Wide Pickup",
             production_start_date="2023-04-01",
             msrp_base_usd=145000.00
         ),
@@ -545,25 +446,9 @@ def load_construction_models(client):
             bucket_capacity_m3=1.0,
             max_dig_depth_m=6.7,
             max_reach_m=9.9,
-            standard_features=[
-                "Cat Grade with 2D",
-                "Cat Product Link",
-                "Hydraulic Quick Coupler",
-                "ROPS/FOPS Cab"
-            ],
-            optional_features=[
-                "Cat Grade with 3D",
-                "Advanced Hydraulic System",
-                "Thumb and Auxiliary Hydraulics",
-                "Air Conditioning Upgrade"
-            ],
-            available_attachments=[
-                "General Purpose Buckets",
-                "Heavy Duty Buckets",
-                "Hydraulic Thumbs",
-                "Grapples",
-                "Hammers"
-            ],
+            standard_features="Cat Grade with 2D, Cat Product Link, Hydraulic Quick Coupler, ROPS/FOPS Cab",
+            optional_features="Cat Grade with 3D, Advanced Hydraulic System, Thumb and Auxiliary Hydraulics, Air Conditioning Upgrade",
+            available_attachments="General Purpose Buckets, Heavy Duty Buckets, Hydraulic Thumbs, Grapples, Hammers",
             production_start_date="2023-01-01",
             msrp_base_usd=185000.00
         ),
@@ -577,16 +462,8 @@ def load_construction_models(client):
             rated_power_hp=270,
             operating_weight_kg=21400,
             blade_capacity_m3=3.5,
-            standard_features=[
-                "Differential Steering",
-                "Electronic Monitoring System",
-                "ROPS/FOPS Cab"
-            ],
-            optional_features=[
-                "Cat Grade with Slope Indicate",
-                "Ripper",
-                "Winch Package"
-            ],
+            standard_features="Differential Steering, Electronic Monitoring System, ROPS/FOPS Cab",
+            optional_features="Cat Grade with Slope Indicate, Ripper, Winch Package",
             production_start_date="2023-01-01",
             msrp_base_usd=275000.00
         ),

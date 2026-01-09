@@ -13,8 +13,8 @@ Key differences from instance tracking:
 """
 
 from terminusdb_client import Client
-from terminusdb_client.woqlschema import DocumentTemplate, WOQLSchema, TaggedUnion
-from typing import Optional, List
+from terminusdb_client.woqlschema import DocumentTemplate, WOQLSchema
+from typing import Optional
 from enum import Enum
 
 
@@ -49,7 +49,7 @@ class ManufacturerCatalog(DocumentTemplate):
     founded_year: Optional[int] = None
     website: Optional[str] = None
     headquarters: Optional[str] = None
-    product_categories: Optional[List[str]] = None
+    product_categories: Optional[str] = None  # Comma-separated list
 
 
 class EngineSpecification(DocumentTemplate):
@@ -120,9 +120,9 @@ class TractorModel(DocumentTemplate):
     def_capacity_liters: Optional[int] = None  # Diesel Exhaust Fluid
     
     # Features and options
-    standard_features: Optional[List[str]] = None
-    optional_features: Optional[List[str]] = None
-    available_tire_sizes: Optional[List[str]] = None
+    standard_features: Optional[str] = None
+    optional_features: Optional[str] = None
+    available_tire_sizes: Optional[str] = None
     
     # Production info
     production_start_date: Optional[str] = None
@@ -151,8 +151,8 @@ class TractorTrim(DocumentTemplate):
     hydraulic_variant: Optional[str] = None
     
     # Included features for this trim
-    included_features: Optional[List[str]] = None
-    excluded_features: Optional[List[str]] = None
+    included_features: Optional[str] = None
+    excluded_features: Optional[str] = None
     
     # Pricing
     msrp_usd: Optional[float] = None
@@ -178,15 +178,15 @@ class CombineModel(DocumentTemplate):
     unloading_rate_liters_per_sec: Optional[float] = None
     
     # Compatible headers
-    compatible_header_types: Optional[List[str]] = None
-    compatible_header_widths_m: Optional[List[float]] = None
+    compatible_header_types: Optional[str] = None
+    compatible_header_widths_m: Optional[str] = None
     
     # Dimensions
     dimensions: Optional[str] = None
     
     # Features
-    standard_features: Optional[List[str]] = None
-    optional_features: Optional[List[str]] = None
+    standard_features: Optional[str] = None
+    optional_features: Optional[str] = None
     
     # Production
     production_start_date: Optional[str] = None
@@ -218,10 +218,10 @@ class BalerModel(DocumentTemplate):
     transport_height_mm: Optional[int] = None
     
     # Features
-    twine_systems: Optional[List[str]] = None
-    wrap_systems: Optional[List[str]] = None
-    standard_features: Optional[List[str]] = None
-    optional_features: Optional[List[str]] = None
+    twine_systems: Optional[str] = None
+    wrap_systems: Optional[str] = None
+    standard_features: Optional[str] = None
+    optional_features: Optional[str] = None
     
     # Production
     production_start_date: Optional[str] = None
@@ -273,9 +273,9 @@ class ConstructionEquipmentModel(DocumentTemplate):
     dimensions: Optional[str] = None
     
     # Features
-    standard_features: Optional[List[str]] = None
-    optional_features: Optional[List[str]] = None
-    available_attachments: Optional[List[str]] = None
+    standard_features: Optional[str] = None
+    optional_features: Optional[str] = None
+    available_attachments: Optional[str] = None
     
     # Production
     production_start_date: Optional[str] = None
