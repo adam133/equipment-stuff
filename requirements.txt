@@ -1,0 +1,2 @@
+terminusdb-client==10.2.4
+requests>=2.28.0
