@@ -241,8 +241,8 @@ docker compose down -v
 ### TerminusDB not connecting
 - Ensure Docker is running
 - Check that port 6363 is not in use
-- Wait a few seconds after `docker-compose up` for the server to start
-- Check logs: `docker-compose logs terminusdb`
+- Wait a few seconds after `docker compose up` for the server to start
+- Check logs: `docker compose logs terminusdb`
 
 ### Python dependencies error
 - Ensure you're using Python 3.8+

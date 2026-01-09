@@ -32,7 +32,7 @@ def check_terminusdb_connection():
     except Exception as e:
         print(f"✗ Cannot connect to TerminusDB: {e}")
         print("\nPlease start TerminusDB first:")
-        print("  docker-compose up -d")
+        print("  docker compose up -d")
         print("\nThen wait a few seconds and run this script again.\n")
         return False
 
