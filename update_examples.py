@@ -8,7 +8,7 @@ This script demonstrates how to:
 """
 
 from init_db import get_client, DB_NAME
-from schema import Manufacturer, Tractor, Combine, ConstructionEquipment
+from schema import Manufacturer, Tractor, Combine, ConstructionEquipment, SmallSquareBaler, LargeSquareBaler, RoundBaler
 
 
 def print_header(title):
@@ -71,9 +71,37 @@ def example_add_combine(client):
     print(f"✓ Successfully added {new_combine.model}\n")
 
 
+def example_add_round_baler(client):
+    """Example: Add a new round baler"""
+    print_header("Example 3: Add a New Round Baler")
+    
+    new_baler = RoundBaler(
+        serial_number="CI-RB565-2023-NEW",
+        manufacturer="Case IH",
+        model="RB565 Premium",
+        year=2023,
+        condition="excellent",
+        pto_hp_required=80,
+        bale_weight_capacity=1650.0,
+        bale_diameter=62.0,
+        bale_width=61.0,
+        bales_per_hour=40,
+        chamber_type="variable",
+        purchase_price=58000.00,
+        current_value=57000.00,
+        hours_used=75,
+        location="North Farm - Barn 3",
+        notes="New round baler with CropCutter system"
+    )
+    
+    print(f"Adding round baler: {new_baler.model} ({new_baler.serial_number})")
+    client.insert_document(new_baler, commit_msg=f"Add baler {new_baler.serial_number}")
+    print(f"✓ Successfully added {new_baler.model}\n")
+
+
 def example_update_hours(client, serial_number="JD-8R-370-2020-001"):
     """Example: Update equipment hours"""
-    print_header(f"Example 3: Update Equipment Hours")
+    print_header(f"Example 4: Update Equipment Hours")
     
     print(f"Finding equipment with serial number: {serial_number}")
     
@@ -106,7 +134,7 @@ def example_update_hours(client, serial_number="JD-8R-370-2020-001"):
 
 def example_update_location(client, serial_number="CAT-320-2019-001"):
     """Example: Update equipment location"""
-    print_header(f"Example 4: Update Equipment Location")
+    print_header(f"Example 5: Update Equipment Location")
     
     print(f"Finding equipment with serial number: {serial_number}")
     
@@ -140,7 +168,7 @@ def example_update_location(client, serial_number="CAT-320-2019-001"):
 
 def example_query_additions(client):
     """Example: Query to see additions"""
-    print_header("Example 5: Verify New Additions")
+    print_header("Example 6: Verify New Additions")
     
     all_docs = list(client.get_all_documents(graph_type="instance"))
     equipment = [d for d in all_docs if d.get('@type') != 'Manufacturer']
@@ -167,6 +195,7 @@ def run_all_examples():
     # Add examples
     example_add_tractor(client)
     example_add_combine(client)
+    example_add_round_baler(client)
     
     # Update examples
     example_update_hours(client)
