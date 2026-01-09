@@ -87,23 +87,6 @@ class ConstructionEquipment(DocumentTemplate):
     max_lift_capacity: Optional[float] = None
 
 
-class Baler(DocumentTemplate):
-    """Base class for baler equipment"""
-    _schema = schema
-    serial_number: str
-    manufacturer: str
-    model: str
-    year: int
-    condition: str
-    purchase_price: Optional[float] = None
-    current_value: Optional[float] = None
-    hours_used: Optional[int] = 0
-    location: Optional[str] = None
-    notes: Optional[str] = None
-    pto_hp_required: Optional[int] = None
-    bale_weight_capacity: Optional[float] = None
-
-
 class SmallSquareBaler(DocumentTemplate):
     """Small square baler equipment"""
     _schema = schema

@@ -159,14 +159,13 @@ The database uses a hierarchical schema:
 ```
 Manufacturer
     ↓
-Equipment (base class)
+Equipment Types (independent classes)
     ├── Tractor
     ├── Combine
     ├── ConstructionEquipment
-    └── Balers
-        ├── SmallSquareBaler
-        ├── LargeSquareBaler
-        └── RoundBaler
+    ├── SmallSquareBaler
+    ├── LargeSquareBaler
+    └── RoundBaler
 ```
 
 ### Core Fields (All Equipment)
