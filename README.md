@@ -41,7 +41,7 @@ A proof of concept using TerminusDB for managing an equipment database that trac
 Start the TerminusDB server using Docker Compose:
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 This will:
@@ -227,13 +227,13 @@ client.replace_document(tractor, commit_msg="Update tractor hours")
 To stop the TerminusDB server:
 
 ```bash
-docker-compose down
+docker compose down
 ```
 
 To stop and remove all data:
 
 ```bash
-docker-compose down -v
+docker compose down -v
 ```
 
 ## Troubleshooting

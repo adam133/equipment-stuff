@@ -99,7 +99,7 @@ def run_demo():
     print("  - Access TerminusDB console: http://localhost:6363")
     print("  - Build your own queries and operations using the examples as templates")
     print("\nTo stop TerminusDB:")
-    print("  docker-compose down")
+    print("  docker compose down")
     print()
 
 

@@ -4,16 +4,10 @@ Query Examples for the Equipment Database
 This script demonstrates various ways to query the equipment database:
 - Get all equipment
 - Filter by type
-- Filter by manufacturer
-- Filter by condition
-- Get equipment by price range
-- Get equipment by hours used
-- Complex queries combining multiple criteria
+- Query specific information
 """
 
 from init_db import get_client, DB_NAME
-from schema import Tractor, Combine, ConstructionEquipment, Manufacturer
-import json
 
 
 def print_header(title):
@@ -23,200 +17,122 @@ def print_header(title):
     print(f"{'=' * 80}\n")
 
 
-def print_equipment(equipment_list, label="Equipment"):
-    """Pretty print equipment details"""
-    if not equipment_list:
-        print(f"  No {label} found.")
-        return
-    
-    print(f"Found {len(equipment_list)} {label}:\n")
-    for i, equipment in enumerate(equipment_list, 1):
-        print(f"{i}. {equipment.get('model', 'Unknown')} ({equipment.get('year', 'N/A')})")
-        print(f"   Serial: {equipment.get('serial_number', 'N/A')}")
-        print(f"   Type: {equipment.get('equipment_type', 'N/A')}")
-        print(f"   Condition: {equipment.get('condition', 'N/A')}")
-        print(f"   Hours: {equipment.get('hours_used', 0):,}")
-        print(f"   Location: {equipment.get('location', 'N/A')}")
-        if equipment.get('current_value'):
-            print(f"   Value: ${equipment.get('current_value', 0):,.2f}")
-        print()
-
-
 def query_all_equipment(client):
     """Query all equipment in the database"""
-    print_header("Query 1: Get All Equipment")
+    print_header("Query 1: Get All Equipment by Type")
     
-    # Query tractors
-    tractors = client.get_all_documents(graph_type="instance", document_template=Tractor)
-    print_equipment(tractors, "Tractors")
+    # Query all documents
+    all_docs = list(client.get_all_documents(graph_type="instance"))
     
-    # Query combines
-    combines = client.get_all_documents(graph_type="instance", document_template=Combine)
-    print_equipment(combines, "Combines")
+    # Separate by type
+    manufacturers = [d for d in all_docs if d.get('@type') == 'Manufacturer']
+    tractors = [d for d in all_docs if d.get('@type') == 'Tractor']
+    combines = [d for d in all_docs if d.get('@type') == 'Combine']
+    construction = [d for d in all_docs if d.get('@type') == 'ConstructionEquipment']
     
-    # Query construction equipment
-    construction = client.get_all_documents(graph_type="instance", document_template=ConstructionEquipment)
-    print_equipment(construction, "Construction Equipment")
+    print(f"Manufacturers ({len(manufacturers)}):")
+    for m in manufacturers:
+        print(f"  - {m.get('name')} ({m.get('country')})")
+    
+    print(f"\nTractors ({len(tractors)}):")
+    for t in tractors:
+        print(f"  - {t.get('model')} ({t.get('year')}) - {t.get('hours_used', 0):,} hours")
+        print(f"    {t.get('horsepower')} HP, {t.get('transmission_type')}")
+    
+    print(f"\nCombines ({len(combines)}):")
+    for c in combines:
+        print(f"  - {c.get('model')} ({c.get('year')}) - {c.get('hours_used', 0):,} hours")
+        print(f"    {c.get('header_width')}ft header, {c.get('grain_tank_capacity')} bu capacity")
+    
+    print(f"\nConstruction Equipment ({len(construction)}):")
+    for e in construction:
+        print(f"  - {e.get('model')} ({e.get('year')}) - {e.get('equipment_type')}")
+        print(f"    {e.get('operating_weight'):,} lbs, {e.get('hours_used', 0):,} hours")
 
 
-def query_by_manufacturer(client, manufacturer_name):
-    """Query equipment by manufacturer"""
-    print_header(f"Query 2: Get Equipment by Manufacturer ({manufacturer_name})")
-    
-    all_equipment = []
-    all_equipment.extend(client.get_all_documents(graph_type="instance", document_template=Tractor))
-    all_equipment.extend(client.get_all_documents(graph_type="instance", document_template=Combine))
-    all_equipment.extend(client.get_all_documents(graph_type="instance", document_template=ConstructionEquipment))
-    
-    # Filter by manufacturer
-    filtered = [eq for eq in all_equipment 
-                if manufacturer_name.lower() in str(eq.get('manufacturer', '')).lower()]
-    
-    print_equipment(filtered, f"{manufacturer_name} Equipment")
-
-
-def query_by_condition(client, condition):
+def query_by_condition(client, condition="excellent"):
     """Query equipment by condition"""
-    print_header(f"Query 3: Get Equipment by Condition ({condition})")
+    print_header(f"Query 2: Equipment in '{condition}' Condition")
     
-    all_equipment = []
-    all_equipment.extend(client.get_all_documents(graph_type="instance", document_template=Tractor))
-    all_equipment.extend(client.get_all_documents(graph_type="instance", document_template=Combine))
-    all_equipment.extend(client.get_all_documents(graph_type="instance", document_template=ConstructionEquipment))
+    all_docs = list(client.get_all_documents(graph_type="instance"))
+    equipment = [d for d in all_docs if d.get('condition') == condition and d.get('@type') != 'Manufacturer']
     
-    # Filter by condition
-    filtered = [eq for eq in all_equipment 
-                if condition.lower() in str(eq.get('condition', '')).lower()]
-    
-    print_equipment(filtered, f"{condition.title()} Condition Equipment")
+    print(f"Found {len(equipment)} items in {condition} condition:\n")
+    for e in equipment:
+        value = e.get('current_value')
+        value_str = f"${value:,.2f}" if value else "N/A"
+        print(f"  - {e.get('model')} ({e.get('year')})")
+        print(f"    Type: {e.get('@type')}, Value: {value_str}")
+        print(f"    Location: {e.get('location', 'Not specified')}")
 
 
-def query_high_value_equipment(client, min_value=200000):
-    """Query equipment above a certain value"""
-    print_header(f"Query 4: Get High-Value Equipment (>${min_value:,})")
+def query_high_value(client, min_value=200000):
+    """Query high-value equipment"""
+    print_header(f"Query 3: Equipment Valued Over ${min_value:,}")
     
-    all_equipment = []
-    all_equipment.extend(client.get_all_documents(graph_type="instance", document_template=Tractor))
-    all_equipment.extend(client.get_all_documents(graph_type="instance", document_template=Combine))
-    all_equipment.extend(client.get_all_documents(graph_type="instance", document_template=ConstructionEquipment))
+    all_docs = list(client.get_all_documents(graph_type="instance"))
+    equipment = [d for d in all_docs 
+                if d.get('current_value') and d.get('current_value') >= min_value]
     
-    # Filter by current value
-    filtered = [eq for eq in all_equipment 
-                if eq.get('current_value', 0) >= min_value]
+    # Sort by value
+    equipment.sort(key=lambda x: x.get('current_value', 0), reverse=True)
     
-    # Sort by value (descending)
-    filtered.sort(key=lambda x: x.get('current_value', 0), reverse=True)
+    total_value = sum(e.get('current_value', 0) for e in equipment)
     
-    print_equipment(filtered, f"High-Value Equipment")
+    print(f"Found {len(equipment)} items:\n")
+    for e in equipment:
+        print(f"  - {e.get('model')} ({e.get('year')}): ${e.get('current_value'):,.2f}")
+        print(f"    Type: {e.get('@type')}, Location: {e.get('location', 'N/A')}")
     
-    if filtered:
-        total_value = sum(eq.get('current_value', 0) for eq in filtered)
-        print(f"Total Value: ${total_value:,.2f}\n")
+    print(f"\nTotal Value: ${total_value:,.2f}")
 
 
-def query_low_hours_equipment(client, max_hours=1500):
-    """Query equipment with low hours"""
-    print_header(f"Query 5: Get Low-Hours Equipment (<{max_hours:,} hours)")
+def query_by_manufacturer(client, manufacturer="John Deere"):
+    """Query equipment by manufacturer"""
+    print_header(f"Query 4: {manufacturer} Equipment")
     
-    all_equipment = []
-    all_equipment.extend(client.get_all_documents(graph_type="instance", document_template=Tractor))
-    all_equipment.extend(client.get_all_documents(graph_type="instance", document_template=Combine))
-    all_equipment.extend(client.get_all_documents(graph_type="instance", document_template=ConstructionEquipment))
+    all_docs = list(client.get_all_documents(graph_type="instance"))
+    equipment = [d for d in all_docs 
+                if d.get('manufacturer') == manufacturer and d.get('@type') != 'Manufacturer']
     
-    # Filter by hours
-    filtered = [eq for eq in all_equipment 
-                if eq.get('hours_used', 0) < max_hours]
-    
-    # Sort by hours (ascending)
-    filtered.sort(key=lambda x: x.get('hours_used', 0))
-    
-    print_equipment(filtered, f"Low-Hours Equipment")
+    print(f"Found {len(equipment)} {manufacturer} items:\n")
+    for e in equipment:
+        print(f"  - {e.get('model')} ({e.get('year')})")
+        print(f"    Type: {e.get('@type')}, Serial: {e.get('serial_number')}")
+        print(f"    Hours: {e.get('hours_used', 0):,}, Condition: {e.get('condition')}")
 
 
-def query_by_location(client, location_keyword):
-    """Query equipment by location"""
-    print_header(f"Query 6: Get Equipment by Location (containing '{location_keyword}')")
+def query_summary(client):
+    """Get equipment summary statistics"""
+    print_header("Query 5: Equipment Fleet Summary")
     
-    all_equipment = []
-    all_equipment.extend(client.get_all_documents(graph_type="instance", document_template=Tractor))
-    all_equipment.extend(client.get_all_documents(graph_type="instance", document_template=Combine))
-    all_equipment.extend(client.get_all_documents(graph_type="instance", document_template=ConstructionEquipment))
+    all_docs = list(client.get_all_documents(graph_type="instance"))
+    equipment = [d for d in all_docs if d.get('@type') != 'Manufacturer']
     
-    # Filter by location
-    filtered = [eq for eq in all_equipment 
-                if location_keyword.lower() in str(eq.get('location', '')).lower()]
+    # Count by type
+    type_counts = {}
+    for e in equipment:
+        t = e.get('@type')
+        type_counts[t] = type_counts.get(t, 0) + 1
     
-    print_equipment(filtered, f"Equipment at '{location_keyword}'")
-
-
-def query_recent_equipment(client, min_year=2020):
-    """Query recently purchased equipment"""
-    print_header(f"Query 7: Get Recent Equipment (Year >= {min_year})")
+    # Financial summary
+    total_purchase = sum(e.get('purchase_price', 0) for e in equipment)
+    total_current = sum(e.get('current_value', 0) for e in equipment)
+    total_hours = sum(e.get('hours_used', 0) for e in equipment)
     
-    all_equipment = []
-    all_equipment.extend(client.get_all_documents(graph_type="instance", document_template=Tractor))
-    all_equipment.extend(client.get_all_documents(graph_type="instance", document_template=Combine))
-    all_equipment.extend(client.get_all_documents(graph_type="instance", document_template=ConstructionEquipment))
+    print(f"Total Equipment: {len(equipment)} items\n")
+    print("By Type:")
+    for t, count in type_counts.items():
+        print(f"  - {t}: {count}")
     
-    # Filter by year
-    filtered = [eq for eq in all_equipment 
-                if eq.get('year', 0) >= min_year]
-    
-    # Sort by year (descending)
-    filtered.sort(key=lambda x: x.get('year', 0), reverse=True)
-    
-    print_equipment(filtered, f"Recent Equipment")
-
-
-def query_manufacturers(client):
-    """Query all manufacturers"""
-    print_header("Query 8: Get All Manufacturers")
-    
-    manufacturers = client.get_all_documents(graph_type="instance", document_template=Manufacturer)
-    
-    if not manufacturers:
-        print("  No manufacturers found.")
-        return
-    
-    print(f"Found {len(manufacturers)} manufacturers:\n")
-    for i, mfr in enumerate(manufacturers, 1):
-        print(f"{i}. {mfr.get('name', 'Unknown')}")
-        print(f"   Country: {mfr.get('country', 'N/A')}")
-        print(f"   Website: {mfr.get('website', 'N/A')}")
-        print()
-
-
-def query_equipment_summary(client):
-    """Get a summary of all equipment"""
-    print_header("Query 9: Equipment Summary Statistics")
-    
-    tractors = client.get_all_documents(graph_type="instance", document_template=Tractor)
-    combines = client.get_all_documents(graph_type="instance", document_template=Combine)
-    construction = client.get_all_documents(graph_type="instance", document_template=ConstructionEquipment)
-    
-    all_equipment = tractors + combines + construction
-    
-    print(f"Total Equipment Count: {len(all_equipment)}")
-    print(f"  - Tractors: {len(tractors)}")
-    print(f"  - Combines: {len(combines)}")
-    print(f"  - Construction Equipment: {len(construction)}")
-    print()
-    
-    # Calculate total values
-    total_purchase = sum(eq.get('purchase_price', 0) for eq in all_equipment if eq.get('purchase_price'))
-    total_current = sum(eq.get('current_value', 0) for eq in all_equipment if eq.get('current_value'))
-    total_hours = sum(eq.get('hours_used', 0) for eq in all_equipment)
-    
-    print(f"Financial Summary:")
+    print(f"\nFinancial Summary:")
     print(f"  - Total Purchase Price: ${total_purchase:,.2f}")
     print(f"  - Total Current Value: ${total_current:,.2f}")
     print(f"  - Total Depreciation: ${total_purchase - total_current:,.2f}")
-    print()
     
-    print(f"Usage Summary:")
-    print(f"  - Total Hours Used: {total_hours:,}")
-    print(f"  - Average Hours per Equipment: {total_hours / len(all_equipment) if all_equipment else 0:,.0f}")
-    print()
+    print(f"\nUsage Summary:")
+    print(f"  - Total Hours: {total_hours:,}")
+    print(f"  - Average Hours per Item: {total_hours / len(equipment) if equipment else 0:.0f}")
 
 
 def run_all_queries():
@@ -228,16 +144,12 @@ def run_all_queries():
     client = get_client()
     client.connect(db=DB_NAME)
     
-    # Run all example queries
+    # Run example queries
     query_all_equipment(client)
-    query_by_manufacturer(client, "John Deere")
     query_by_condition(client, "excellent")
-    query_high_value_equipment(client, 200000)
-    query_low_hours_equipment(client, 1500)
-    query_by_location(client, "North Farm")
-    query_recent_equipment(client, 2020)
-    query_manufacturers(client)
-    query_equipment_summary(client)
+    query_high_value(client, 200000)
+    query_by_manufacturer(client, "John Deere")
+    query_summary(client)
     
     print("\n" + "=" * 80)
     print("  All queries completed successfully!")
@@ -249,4 +161,6 @@ if __name__ == "__main__":
         run_all_queries()
     except Exception as e:
         print(f"\n✗ Error running queries: {e}")
+        import traceback
+        traceback.print_exc()
         raise
