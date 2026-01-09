@@ -87,8 +87,8 @@ class ConstructionEquipment(DocumentTemplate):
     max_lift_capacity: Optional[float] = None
 
 
-class SmallSquareBaler(DocumentTemplate):
-    """Small square baler equipment"""
+class Baler(DocumentTemplate):
+    """Base class for baler equipment"""
     _schema = schema
     serial_number: str
     manufacturer: str
@@ -102,27 +102,20 @@ class SmallSquareBaler(DocumentTemplate):
     notes: Optional[str] = None
     pto_hp_required: Optional[int] = None
     bale_weight_capacity: Optional[float] = None
+
+
+class SmallSquareBaler(Baler):
+    """Small square baler equipment"""
+    _schema = schema
     bale_width: Optional[float] = None
     bale_height: Optional[float] = None
     bale_length: Optional[float] = None
     bales_per_hour: Optional[int] = None
 
 
-class LargeSquareBaler(DocumentTemplate):
+class LargeSquareBaler(Baler):
     """Large square baler equipment"""
     _schema = schema
-    serial_number: str
-    manufacturer: str
-    model: str
-    year: int
-    condition: str
-    purchase_price: Optional[float] = None
-    current_value: Optional[float] = None
-    hours_used: Optional[int] = 0
-    location: Optional[str] = None
-    notes: Optional[str] = None
-    pto_hp_required: Optional[int] = None
-    bale_weight_capacity: Optional[float] = None
     bale_width: Optional[float] = None
     bale_height: Optional[float] = None
     bale_length: Optional[float] = None
@@ -130,21 +123,9 @@ class LargeSquareBaler(DocumentTemplate):
     bale_density: Optional[str] = None
 
 
-class RoundBaler(DocumentTemplate):
+class RoundBaler(Baler):
     """Round baler equipment"""
     _schema = schema
-    serial_number: str
-    manufacturer: str
-    model: str
-    year: int
-    condition: str
-    purchase_price: Optional[float] = None
-    current_value: Optional[float] = None
-    hours_used: Optional[int] = 0
-    location: Optional[str] = None
-    notes: Optional[str] = None
-    pto_hp_required: Optional[int] = None
-    bale_weight_capacity: Optional[float] = None
     bale_diameter: Optional[float] = None
     bale_width: Optional[float] = None
     bales_per_hour: Optional[int] = None

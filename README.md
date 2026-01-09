@@ -163,9 +163,10 @@ Equipment Types (independent classes)
     ├── Tractor
     ├── Combine
     ├── ConstructionEquipment
-    ├── SmallSquareBaler
-    ├── LargeSquareBaler
-    └── RoundBaler
+    └── Baler (base class)
+        ├── SmallSquareBaler
+        ├── LargeSquareBaler
+        └── RoundBaler
 ```
 
 ### Core Fields (All Equipment)
