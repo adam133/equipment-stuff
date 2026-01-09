@@ -5,6 +5,7 @@ This module defines the schema for an equipment database that includes:
 - Tractors
 - Combines
 - Construction Equipment
+- Balers (Small Square, Large Square, and Round)
 
 Using TerminusDB WOQLSchema for proper schema definition
 """
@@ -84,6 +85,87 @@ class ConstructionEquipment(DocumentTemplate):
     max_reach: Optional[float] = None
     bucket_capacity: Optional[float] = None
     max_lift_capacity: Optional[float] = None
+
+
+class Baler(DocumentTemplate):
+    """Base class for baler equipment"""
+    _schema = schema
+    serial_number: str
+    manufacturer: str
+    model: str
+    year: int
+    condition: str
+    purchase_price: Optional[float] = None
+    current_value: Optional[float] = None
+    hours_used: Optional[int] = 0
+    location: Optional[str] = None
+    notes: Optional[str] = None
+    pto_hp_required: Optional[int] = None
+    bale_weight_capacity: Optional[float] = None
+
+
+class SmallSquareBaler(DocumentTemplate):
+    """Small square baler equipment"""
+    _schema = schema
+    serial_number: str
+    manufacturer: str
+    model: str
+    year: int
+    condition: str
+    purchase_price: Optional[float] = None
+    current_value: Optional[float] = None
+    hours_used: Optional[int] = 0
+    location: Optional[str] = None
+    notes: Optional[str] = None
+    pto_hp_required: Optional[int] = None
+    bale_weight_capacity: Optional[float] = None
+    bale_width: Optional[float] = None
+    bale_height: Optional[float] = None
+    bale_length: Optional[float] = None
+    bales_per_hour: Optional[int] = None
+
+
+class LargeSquareBaler(DocumentTemplate):
+    """Large square baler equipment"""
+    _schema = schema
+    serial_number: str
+    manufacturer: str
+    model: str
+    year: int
+    condition: str
+    purchase_price: Optional[float] = None
+    current_value: Optional[float] = None
+    hours_used: Optional[int] = 0
+    location: Optional[str] = None
+    notes: Optional[str] = None
+    pto_hp_required: Optional[int] = None
+    bale_weight_capacity: Optional[float] = None
+    bale_width: Optional[float] = None
+    bale_height: Optional[float] = None
+    bale_length: Optional[float] = None
+    bales_per_hour: Optional[int] = None
+    bale_density: Optional[str] = None
+
+
+class RoundBaler(DocumentTemplate):
+    """Round baler equipment"""
+    _schema = schema
+    serial_number: str
+    manufacturer: str
+    model: str
+    year: int
+    condition: str
+    purchase_price: Optional[float] = None
+    current_value: Optional[float] = None
+    hours_used: Optional[int] = 0
+    location: Optional[str] = None
+    notes: Optional[str] = None
+    pto_hp_required: Optional[int] = None
+    bale_weight_capacity: Optional[float] = None
+    bale_diameter: Optional[float] = None
+    bale_width: Optional[float] = None
+    bales_per_hour: Optional[int] = None
+    chamber_type: Optional[str] = None
 
 
 def commit_schema(client: Client):

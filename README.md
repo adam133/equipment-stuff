@@ -4,7 +4,7 @@ A proof of concept using TerminusDB for managing an equipment database that trac
 
 ## Features
 
-- **Comprehensive Schema**: Supports multiple equipment types (tractors, combines, construction equipment) with type-specific attributes
+- **Comprehensive Schema**: Supports multiple equipment types (tractors, combines, construction equipment, balers) with type-specific attributes
 - **Manufacturer Tracking**: Maintains manufacturer information with relationships to equipment
 - **Rich Metadata**: Tracks equipment condition, hours used, location, values, and more
 - **Sample Data**: Includes realistic sample data for demonstration
@@ -27,6 +27,13 @@ A proof of concept using TerminusDB for managing an equipment database that trac
 - Operating weight, digging depth, reach
 - Bucket capacity, lift capacity
 - Types: Excavators, Bulldozers, Backhoes, Cranes/Telehandlers
+
+### Balers
+- PTO horsepower requirements, bale weight capacity
+- Bale dimensions (width, height, length, diameter)
+- Bales per hour capacity
+- Types: Small Square Balers, Large Square Balers, Round Balers
+- Examples: New Holland BC5060, Case IH LB436, John Deere 569 Premium
 
 ## Prerequisites
 
@@ -80,6 +87,7 @@ This loads:
 - 3 tractors
 - 2 combines
 - 4 construction equipment items
+- 6 balers (2 small square, 2 large square, 2 round)
 
 ### 5. Run Query Examples
 
@@ -139,7 +147,11 @@ Manufacturer
 Equipment (base class)
     ├── Tractor
     ├── Combine
-    └── ConstructionEquipment
+    ├── ConstructionEquipment
+    └── Balers
+        ├── SmallSquareBaler
+        ├── LargeSquareBaler
+        └── RoundBaler
 ```
 
 ### Core Fields (All Equipment)
@@ -168,6 +180,47 @@ Equipment (base class)
 **Construction Equipment:**
 - `operating_weight`, `max_digging_depth`
 - `max_reach`, `bucket_capacity`, `max_lift_capacity`
+
+**Balers (All Types):**
+- `pto_hp_required`, `bale_weight_capacity`
+
+**Small Square Balers:**
+- `bale_width`, `bale_height`, `bale_length`
+- `bales_per_hour`
+
+**Large Square Balers:**
+- `bale_width`, `bale_height`, `bale_length`
+- `bales_per_hour`, `bale_density`
+
+**Round Balers:**
+- `bale_diameter`, `bale_width`
+- `bales_per_hour`, `chamber_type`
+
+## How TerminusDB Handles Schema Changes
+
+TerminusDB manages schema evolution through its commit-based system:
+
+### Schema Definition
+- Schemas are defined using `WOQLSchema()` and `DocumentTemplate` classes
+- Each document type is defined declaratively with typed fields
+- The schema is stored as part of the database
+
+### Schema Commits
+- Schema changes are committed using `schema.commit(client, commit_msg="...")`
+- Each schema change creates a new commit in the database history
+- This allows tracking of schema evolution over time
+
+### Schema Updates
+- To modify the schema, update the `schema.py` file with new classes or fields
+- Re-run `init_db.py` to delete and recreate the database with the new schema
+- Alternatively, for production systems, you can perform incremental schema updates
+
+### Adding New Equipment Types
+This project demonstrates schema extension by adding the Baler class hierarchy:
+1. Define base `Baler` class with common attributes
+2. Define subclasses (`SmallSquareBaler`, `LargeSquareBaler`, `RoundBaler`) with specific attributes
+3. Commit the updated schema to TerminusDB
+4. Load sample data using the new classes
 
 ## Usage Examples
 

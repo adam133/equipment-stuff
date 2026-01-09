@@ -5,10 +5,11 @@ This script populates the database with example equipment including:
 - Multiple tractors from different manufacturers
 - Combine harvesters
 - Various construction equipment
+- Balers (small square, large square, and round)
 """
 
 from init_db import get_client, DB_NAME
-from schema import Manufacturer, Tractor, Combine, ConstructionEquipment
+from schema import Manufacturer, Tractor, Combine, ConstructionEquipment, SmallSquareBaler, LargeSquareBaler, RoundBaler
 
 
 def load_sample_data():
@@ -218,8 +219,131 @@ def load_sample_data():
         except Exception as e:
             print(f"  ! {equipment.model} (may already exist): {e}")
     
+    # Create balers
+    print("\nCreating balers...")
+    balers = [
+        SmallSquareBaler(
+            serial_number="NH-BC5060-2020-001",
+            manufacturer="New Holland",
+            model="BC5060",
+            year=2020,
+            condition="excellent",
+            pto_hp_required=50,
+            bale_weight_capacity=75.0,
+            bale_width=14.0,
+            bale_height=18.0,
+            bale_length=36.0,
+            bales_per_hour=45,
+            purchase_price=28000.00,
+            current_value=25000.00,
+            hours_used=450,
+            location="South Farm - Equipment Shed",
+            notes="Small square baler for hay production"
+        ),
+        SmallSquareBaler(
+            serial_number="JD-348-2018-002",
+            manufacturer="John Deere",
+            model="348",
+            year=2018,
+            condition="good",
+            pto_hp_required=45,
+            bale_weight_capacity=70.0,
+            bale_width=14.0,
+            bale_height=18.0,
+            bale_length=32.0,
+            bales_per_hour=40,
+            purchase_price=25000.00,
+            current_value=20000.00,
+            hours_used=1250,
+            location="North Farm - Barn 2",
+            notes="Backup small square baler"
+        ),
+        LargeSquareBaler(
+            serial_number="CI-LB436-2021-001",
+            manufacturer="Case IH",
+            model="LB436",
+            year=2021,
+            condition="excellent",
+            pto_hp_required=120,
+            bale_weight_capacity=1200.0,
+            bale_width=36.0,
+            bale_height=36.0,
+            bale_length=96.0,
+            bales_per_hour=25,
+            bale_density="high",
+            purchase_price=145000.00,
+            current_value=135000.00,
+            hours_used=380,
+            location="North Farm - Equipment Building",
+            notes="Large square baler for commercial hay operation"
+        ),
+        LargeSquareBaler(
+            serial_number="NH-BB1290-2019-002",
+            manufacturer="New Holland",
+            model="BB1290",
+            year=2019,
+            condition="good",
+            pto_hp_required=145,
+            bale_weight_capacity=1500.0,
+            bale_width=47.0,
+            bale_height=35.0,
+            bale_length=98.0,
+            bales_per_hour=30,
+            bale_density="high",
+            purchase_price=165000.00,
+            current_value=140000.00,
+            hours_used=925,
+            location="South Farm - Equipment Building",
+            notes="High-capacity large square baler"
+        ),
+        RoundBaler(
+            serial_number="JD-569-2022-001",
+            manufacturer="John Deere",
+            model="569 Premium",
+            year=2022,
+            condition="excellent",
+            pto_hp_required=75,
+            bale_weight_capacity=1600.0,
+            bale_diameter=60.0,
+            bale_width=60.0,
+            bales_per_hour=35,
+            chamber_type="variable",
+            purchase_price=55000.00,
+            current_value=52000.00,
+            hours_used=285,
+            location="North Farm - Barn 1",
+            notes="Premium round baler with net wrap"
+        ),
+        RoundBaler(
+            serial_number="NH-ROLL-BELT-2017-002",
+            manufacturer="New Holland",
+            model="Roll-Belt 450",
+            year=2017,
+            condition="fair",
+            pto_hp_required=65,
+            bale_weight_capacity=1400.0,
+            bale_diameter=55.0,
+            bale_width=52.0,
+            bales_per_hour=30,
+            chamber_type="fixed",
+            purchase_price=45000.00,
+            current_value=32000.00,
+            hours_used=2100,
+            location="South Farm - Equipment Shed",
+            notes="Older round baler, still functional"
+        ),
+    ]
+    
+    for baler in balers:
+        try:
+            client.insert_document(baler, commit_msg=f"Add baler {baler.serial_number}")
+            print(f"  ✓ Added {baler.model} ({baler.serial_number})")
+        except Exception as e:
+            print(f"  ! {baler.model} (may already exist): {e}")
+    
     print(f"\n✓ Successfully loaded {len(manufacturers)} manufacturers, {len(tractors)} tractors, "
-          f"{len(combines)} combines, and {len(construction_equipment)} construction equipment!")
+          f"{len(combines)} combines, {len(construction_equipment)} construction equipment, "
+          f"and {len(balers)} balers!")
     
     return client
 
